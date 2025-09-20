@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taekwondo Tutorial - Practice</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(90deg, #FF416C, #FF4B2B);
+            --dark-bg: #000000;
+            --card-bg: rgba(26, 26, 26, 0.95);
+            --text-light: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        /* Button Styles */
+        .nav-btn {
+            margin: 0.5rem;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #skipBtn {
+            background: linear-gradient(90deg, #FFB347, #FFCC33);
+            border: none;
+            color: #000;
+        }
+
+        #skipBtn:hover {
+            background: linear-gradient(90deg, #FFCC33, #FFB347);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 204, 51, 0.3);
+        }
+
+        /* Tutorial Sections */
+        .tutorial-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tutorial-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .tutorial-section h2 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Video Containers */
+        .video-feed-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio for horizontal video */
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.connected {
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connecting {
+            background-color: #ffc107;
+            animation: blink 1s infinite;
+        }
+
+        .status-dot.disconnected {
+            background-color: #dc3545;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        #video-feed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .pose-container {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* Keep 4:3 aspect ratio for pose images */
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(255, 65, 108, 0.1), rgba(255, 75, 43, 0.1));
+        }
+
+        #current-pose {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 15px;
+        }
+
+        #tutorial-video {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Progress Info */
+        .progress-info {
+            margin-top: 2rem;
+        }
+
+        .badge.bg-primary {
+            background: var(--primary-gradient) !important;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 50px;
+        }
+
+        /* Success Message */
+        #success-message {
+            background: linear-gradient(135deg, rgba(40, 200, 100, 0.1), rgba(40, 200, 100, 0.2));
+            border: none;
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        /* Pose Success Overlay */
+        .pose-success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+
+        .pose-success-content {
+            background: linear-gradient(135deg, rgba(40, 200, 100, 0.2), rgba(40, 200, 100, 0.3));
+            border: 2px solid #28c864;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: successPulse 0.6s ease;
+            backdrop-filter: blur(15px);
+        }
+
+        .pose-success-icon {
+            font-size: 4rem;
+            color: #28c864;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        .pose-success-title {
+            font-size: 2rem;
+            color: #28c864;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pose-success-message {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .pose-success-score {
+            font-size: 1.5rem;
+            color: #28c864;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .pose-success-next {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes successPulse {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            50% {
+                transform: scale(1.05) translateY(-5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-btn {
+                margin: 0.25rem;
+                width: calc(100% - 0.5rem);
+            }
+            .video-feed-container {
+                padding-top: 75%; /* More square on mobile for better mobile viewing */
+            }
+            .pose-container {
+                padding-top: 100%; /* Square aspect ratio on mobile */
+            }
+        }
+
+         /* Navbar */
+    .navbar {
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar-brand img {
+      height: 40px;
+      margin-right: .5rem;
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #FF416C, #FF4B2B);
+      transition: all .3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+        /* Camera and video container */
+        #camera-feed {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            display: none;
+        }
+
+        /* Pose matching status */
+        .pose-status {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            text-align: center;
+        }
+
+        .pose-status h6 {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+
+        .similarity-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .similarity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .status-good {
+            color: #6bcf7f !important;
+        }
+
+        .status-medium {
+            color: #ffd93d !important;
+        }
+
+        .status-poor {
+            color: #ff6b6b !important;
+        }    </style>
+</head>
+<body>
+    <!-- Navbar -->
+        <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <img src="/static/assets/logo.png" alt="Logo"> Taekwondo Hub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('tutorial') }}">Tutorial</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <div class="container py-5 mt-5">
+        <header class="text-center mb-5">
+            <h1 class="display-4 mb-4" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Taekwondo Tutorial
+            </h1>
+            <nav class="d-flex flex-wrap justify-content-center gap-2">
+                <button id="startBtn" class="nav-btn btn btn-primary">
+                    <i class="bi bi-play-fill me-2"></i>Start Tutorial
+                </button>
+                <button id="restartBtn" class="nav-btn btn btn-secondary">
+                    <i class="bi bi-arrow-counterclockwise me-2"></i>Restart
+                </button>
+                <button id="skipBtn" class="nav-btn btn btn-warning" style="display: none;">
+                    <i class="bi bi-skip-forward-fill me-2"></i>Skip Pose
+                </button>
+                <a href="{{ url_for('index') }}" class="nav-btn btn btn-outline-light">
+                    <i class="bi bi-house-door-fill me-2"></i>Home
+                </a>
+            </nav>
+        </header>
+
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-12 col-lg-6">
+                <div class="tutorial-section">
+                    <h2 class="h4 mb-3">Tutorial Video</h2>
+                    <video id="tutorial-video" class="w-100 mb-3" style="display: none;">
+                        <source src="" type="video/mp4">
+                    </video>
+                    <div id="webcam-container" style="display: none;">
+                        <h2 class="h4 mb-3">Your Practice</h2>
+                        <div class="video-feed-container">
+                            <!-- Raw camera feed (hidden, used for capture only) -->
+                            <video id="camera-feed" autoplay playsinline style="display: none;"></video>
+                            <!-- Processed frames with pose detection will be shown here -->
+                            <img id="video-feed" alt="Live video feed with pose detection" class="rounded" style="display: block;">
+                            
+                            <!-- Connection Status -->
+                            <div class="connection-status" id="connectionStatus">
+                                <span class="status-dot" id="statusDot"></span>
+                                <span id="statusText">Connecting...</span>
+                            </div>
+                            
+                            <!-- Pose Matching Status -->
+                            <div class="pose-status" id="poseStatus" style="display: none;">
+                                <h6 id="poseStatusTitle">Detecting Pose...</h6>
+                                <div id="poseStatusMessage">Position yourself and match the target pose</div>
+                                <div class="similarity-bar">
+                                    <div class="similarity-fill" id="similarityFill"></div>
+                                </div>
+                                <small id="similarityText">Similarity: 0%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-12 col-lg-6">
+                <div class="tutorial-section">
+                    <h2 class="h4 mb-3">Target Pose</h2>
+                    <div class="pose-container mb-3">
+                        <img id="current-pose" src="" alt="Current pose to match" class="rounded">
+                    </div>
+                    <div class="progress-info text-center mb-3">
+                        <p class="h5">Progress: <span id="current-progress" class="badge bg-primary">0/22</span></p>
+                    </div>
+                    <div id="success-message" style="display: none;" class="alert alert-success text-center">
+                        <h3 class="h5">Congratulations!</h3>
+                        <p class="mb-0">You've completed the tutorial successfully!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pose Success Overlay -->
+    <div id="poseSuccessOverlay" class="pose-success-overlay" style="display: none;">
+        <div class="pose-success-content">
+            <div class="pose-success-icon">✅</div>
+            <h2 class="pose-success-title">Perfect Match!</h2>
+            <p class="pose-success-message" id="poseSuccessMessage">Great job! You nailed the pose!</p>
+            <div class="pose-success-score" id="poseSuccessScore">95% Accuracy</div>
+            <p class="pose-success-next">Moving to next pose automatically...</p>
+        </div>
+    </div>
+
+    <!-- Audio element for success sound -->
+    <audio id="success-sound" preload="auto">
+        <source src="{{ url_for('static', filename='audio/audio.wav') }}" type="audio/wav">
+    </audio>
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Camera client script -->
+    <script src="{{ url_for('static', filename='js/camera-client.js') }}?v={{ range(1000, 9999) | random }}"></script>
+
+    <script>
+        let currentVideoIndex = 0;
+        const totalVideos = 22;
+        let poseMatched = false;
+        
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const tutorialVideo = document.getElementById('tutorial-video');
+            const webcamContainer = document.getElementById('webcam-container');
+            const currentPose = document.getElementById('current-pose');
+            const startBtn = document.getElementById('startBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            const successSound = document.getElementById('success-sound');
+            
+            startBtn.addEventListener('click', startTutorial);
+            restartBtn.addEventListener('click', restartTutorial);
+            skipBtn.addEventListener('click', () => {
+                if (!skipBtn.disabled) {
+                    skipBtn.disabled = true;  // Prevent double-clicking
+                    skipCurrentPose();
+                    // Re-enable after a short delay
+                    setTimeout(() => {
+                        skipBtn.disabled = false;
+                    }, 1000);
+                }
+            });
+
+            // Set up WebSocket event listeners for pose matching using the same socket as camera client
+            const socket = window.socket || io();
+            
+            // Add debugging for all socket events
+            socket.onAny((eventName, ...args) => {
+                console.log(`[SOCKET EVENT] ${eventName}:`, args);
+            });
+            
+            socket.on('pose_match_confirmed', function(data) {
+                console.log('Received pose_match_confirmed event:', data);
+                if (data.matched && !poseMatched) {
+                    console.log('Pose matched and confirmed! Similarity:', data.similarity);
+                    poseMatched = true;
+                    
+                    // Show success message immediately
+                    if (typeof showPoseSuccessMessage === 'function') {
+                        showPoseSuccessMessage(data);
+                    }
+                    
+                    // Play success sound
+                    try {
+                        successSound.currentTime = 0; // Reset audio to start
+                        successSound.play().catch(e => console.error('Audio playback failed:', e));
+                    } catch (e) {
+                        console.error('Error playing audio:', e);
+                    }
+                    
+                    // Auto-advance to next pose after showing success message
+                    setTimeout(() => {
+                        currentVideoIndex++;
+                        if (currentVideoIndex >= totalVideos) {
+                            showSuccessMessage();
+                            if (skipBtn) skipBtn.style.display = 'none';
+                        } else {
+                            if (typeof playNextVideo === 'function') {
+                                playNextVideo();
+                            }
+                        }
+                    }, 3000); // Show success message for 3 seconds before advancing
+                }
+            });
+
+            // Fallback listener for compatibility (in case the old event is still being sent)
+            socket.on('pose_match', function(data) {
+                console.log('Received pose_match event (fallback):', data);
+                if (data.matched && !poseMatched && data.similarity >= 85) {
+                    console.log('Pose matched via fallback! Similarity:', data.similarity);
+                    poseMatched = true;
+                    
+                    // Show success message immediately
+                    showPoseSuccessMessage(data);
+                    
+                    // Play success sound
+                    try {
+                        successSound.currentTime = 0; 
+                        successSound.play().catch(e => console.error('Audio playback failed:', e));
+                    } catch (e) {
+                        console.error('Error playing audio:', e);
+                    }
+                    
+                    // Auto-advance to next pose after showing success message
+                    setTimeout(() => {
+                        currentVideoIndex++;
+                        
+                        if (currentVideoIndex >= totalVideos) {
+                            showSuccessMessage();
+                            skipBtn.style.display = 'none';
+                        } else {
+                            playNextVideo();
+                        }
+                    }, 3000);
+                }
+            });
+
+            // Add new socket event for real-time similarity updates
+            socket.on('pose_similarity', function(data) {
+                if (!poseMatched && data.similarity !== undefined) {
+                    console.log('Received similarity update:', data.similarity + '%');
+                    const message = data.message || 'Keep adjusting your pose...';
+                    updatePoseStatus(data.similarity, 'detecting', message);
+                }
+            });
+
+            // Add processed frame handler
+            socket.on('processed_frame', function(data) {
+                const videoFeed = document.getElementById('video-feed');
+                if (videoFeed && data.image) {
+                    videoFeed.src = data.image;
+                    videoFeed.style.display = 'block';
+                    
+                    // Show pose status when we start receiving processed frames
+                    const poseStatus = document.getElementById('poseStatus');
+                    if (poseStatus && !poseMatched) {
+                        poseStatus.style.display = 'block';
+                        // Initialize with default message if no similarity data yet
+                        if (!poseStatus.classList.contains('initialized')) {
+                            updatePoseStatus(0, 'detecting', 'Position yourself in front of the camera...');
+                            poseStatus.classList.add('initialized');
+                        }
+                    }
+                }
+            });
+
+            // Connection status management
+            function updateConnectionStatus(status, text) {
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+                
+                if (statusDot && statusText) {
+                    statusDot.className = `status-dot ${status}`;
+                    statusText.textContent = text;
+                    console.log(`Connection status: ${status} - ${text}`);
+                }
+            }
+
+            socket.on('connect', function() {
+                console.log('WebSocket connected for pose detection');
+                updateConnectionStatus('connected', 'Connected');
+            });
+
+            socket.on('connection_test', function(data) {
+                console.log('Connection test received:', data.message);
+            });
+
+            socket.on('current_pose_info', function(data) {
+                console.log('Current pose info:', data);
+            });
+
+            socket.on('disconnect', function() {
+                console.log('WebSocket disconnected');
+                updateConnectionStatus('disconnected', 'Disconnected');
+            });
+
+            socket.on('connect_error', function(error) {
+                console.error('WebSocket connection error:', error);
+                updateConnectionStatus('disconnected', 'Connection Error');
+            });
+
+            socket.on('connecting', function() {
+                console.log('WebSocket connecting...');
+                updateConnectionStatus('connecting', 'Connecting...');
+            });
+
+            socket.on('reconnecting', function(attempt) {
+                console.log('WebSocket reconnecting, attempt:', attempt);
+                updateConnectionStatus('connecting', `Reconnecting... (${attempt})`);
+            });
+
+            socket.on('error', function(error) {
+                console.error('WebSocket error:', error);
+                updateConnectionStatus('disconnected', 'Error');
+            });
+
+            // Initialize audio (needed for some browsers)
+            function initAudio() {
+                successSound.load();
+                // Create and play a silent audio context to enable audio
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const silence = audioContext.createBuffer(1, 1, 22050);
+                const source = audioContext.createBufferSource();
+                source.buffer = silence;
+                source.connect(audioContext.destination);
+                source.start();
+            }
+
+            // Update pose matching status UI
+            function updatePoseStatus(similarity, status, message) {
+                const poseStatus = document.getElementById('poseStatus');
+                const poseStatusTitle = document.getElementById('poseStatusTitle');
+                const poseStatusMessage = document.getElementById('poseStatusMessage');
+                const similarityFill = document.getElementById('similarityFill');
+                const similarityText = document.getElementById('similarityText');
+                
+                if (!poseStatus) return;
+                
+                // Update similarity percentage
+                const simPercent = Math.round(similarity || 0);
+                similarityFill.style.width = simPercent + '%';
+                similarityText.textContent = `Similarity: ${simPercent}%`;
+                
+                // Update status styling and messages
+                poseStatusTitle.className = '';
+                poseStatusMessage.textContent = message;
+                
+                switch (status) {
+                    case 'success':
+                        poseStatusTitle.className = 'status-good';
+                        poseStatusTitle.textContent = '✓ Pose Matched!';
+                        break;
+                    case 'detecting':
+                        if (simPercent >= 75) {
+                            poseStatusTitle.className = 'status-good';
+                            poseStatusTitle.textContent = '🎯 Almost Perfect!';
+                            poseStatusMessage.textContent = 'Great! You\'re very close to matching the pose!';
+                        } else if (simPercent >= 50) {
+                            poseStatusTitle.className = 'status-medium';
+                            poseStatusTitle.textContent = '📈 Getting Better!';
+                            poseStatusMessage.textContent = 'Good progress! Adjust your pose a bit more...';
+                        } else if (simPercent >= 20) {
+                            poseStatusTitle.className = 'status-poor';
+                            poseStatusTitle.textContent = '🎯 Keep Trying!';
+                            poseStatusMessage.textContent = 'Try to match the target pose more closely...';
+                        } else {
+                            poseStatusTitle.className = 'status-poor';
+                            poseStatusTitle.textContent = '👤 Position Yourself';
+                            poseStatusMessage.textContent = message || 'Stand in front of the camera and try the pose...';
+                        }
+                        break;
+                    default:
+                        poseStatusTitle.textContent = 'Detecting Pose...';
+                        break;
+                }
+                
+                poseStatus.style.display = 'block';
+            }
+
+            // Show pose success overlay
+            function showPoseSuccessMessage(data) {
+                console.log('Showing pose success message for:', data);
+                
+                const overlay = document.getElementById('poseSuccessOverlay');
+                const message = document.getElementById('poseSuccessMessage');
+                const score = document.getElementById('poseSuccessScore');
+                
+                if (overlay && message && score) {
+                    // Update content
+                    message.textContent = data.message || 'Excellent! You matched the pose perfectly!';
+                    score.textContent = `${Math.round(data.similarity)}% Accuracy`;
+                    
+                    // Show overlay
+                    overlay.style.display = 'flex';
+                    
+                    // Hide pose status during success display
+                    const poseStatus = document.getElementById('poseStatus');
+                    if (poseStatus) {
+                        poseStatus.style.display = 'none';
+                    }
+                    
+                    // Hide overlay after 2.5 seconds (before auto-advance)
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                    }, 2500);
+                }
+            }
+
+            function startTutorial() {
+                console.log('Starting tutorial...');
+                currentVideoIndex = 0;
+                document.getElementById('success-message').style.display = 'none';
+                currentPose.style.display = 'none';
+                skipBtn.style.display = 'inline-block';
+                initAudio();  // Initialize audio system
+                playNextVideo();
+            }
+
+            function restartTutorial() {
+                console.log('Restarting tutorial...');
+                currentVideoIndex = 0;
+                document.getElementById('success-message').style.display = 'none';
+                tutorialVideo.style.display = 'none';
+                webcamContainer.style.display = 'none';
+                currentPose.style.display = 'none';
+                skipBtn.style.display = 'inline-block';
+                // Stop camera when restarting
+                if (window.cameraClient) {
+                    window.cameraClient.stop();
+                }
+                playNextVideo();
+            }
+
+            function skipCurrentPose() {
+                console.log('Skipping current pose:', currentVideoIndex + 1);
+                
+                // Clear any existing pose detection interval
+                if (window._poseCheckInterval) {
+                    clearInterval(window._poseCheckInterval);
+                }
+                
+                // Update server's pose index before moving to next pose
+                fetch(`/update_pose_index/${currentVideoIndex}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Move to next pose regardless of server response
+                        currentVideoIndex++;
+                        
+                        // Hide current displays
+                        tutorialVideo.style.display = 'none';
+                        webcamContainer.style.display = 'none';
+                        currentPose.style.display = 'none';
+                        // Stop camera when moving to next pose
+                        if (window.cameraClient) {
+                            window.cameraClient.stop();
+                        }
+                        
+                        if (currentVideoIndex >= totalVideos) {
+                            showSuccessMessage();
+                            skipBtn.style.display = 'none';
+                        } else {
+                            // Small delay before playing next video for smooth transition
+                            setTimeout(() => {
+                                playNextVideo();
+                            }, 300);
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Error updating pose index:', error);
+                        // Continue with skip even if server update fails
+                        currentVideoIndex++;
+                        if (currentVideoIndex >= totalVideos) {
+                            showSuccessMessage();
+                            skipBtn.style.display = 'none';
+                        } else {
+                            playNextVideo();
+                        }
+                    });
+            }
+
+            function playNextVideo() {
+                if (currentVideoIndex >= totalVideos) {
+                    showSuccessMessage();
+                    return;
+                }
+
+                console.log('Playing video:', currentVideoIndex + 1);
+                poseMatched = false;
+                
+                // Reset video display
+                tutorialVideo.pause();
+                tutorialVideo.currentTime = 0;
+                
+                // Set new video source
+                let videoFileName;
+                if (currentVideoIndex + 1 === 20 || currentVideoIndex + 1 === 21) {
+                    videoFileName = `clip_${currentVideoIndex + 1}(a).mp4`;
+                } else {
+                    videoFileName = `clip_${currentVideoIndex + 1}.mp4`;
+                }
+                
+                const videoUrl = `/static/poses_video/${videoFileName}`;
+                console.log('Loading video:', videoUrl);
+                
+                // Show loading state
+                tutorialVideo.style.display = 'block';
+                webcamContainer.style.display = 'none';
+                currentPose.style.display = 'none';
+                // Stop camera when showing new video
+                if (window.cameraClient) {
+                    window.cameraClient.stop();
+                }
+                
+                // Set up video
+                tutorialVideo.src = videoUrl;
+                tutorialVideo.playbackRate = 0.5;
+                
+                // Update progress
+                document.getElementById('current-progress').textContent = 
+                    `${currentVideoIndex + 1}/${totalVideos}`;
+
+                // Video event handlers
+                tutorialVideo.onerror = (e) => {
+                    console.error('Error loading video:', e);
+                };
+                
+                tutorialVideo.oncanplay = () => {
+                    console.log('Video can play:', videoFileName);
+                    tutorialVideo.play().catch(e => console.error('Play failed:', e));
+                };
+
+                tutorialVideo.onended = () => {
+                    console.log('Video ended, showing webcam');
+                    tutorialVideo.style.display = 'none';
+                    webcamContainer.style.display = 'block';
+                    showTargetPose();
+                    // Start the camera for pose detection
+                    if (window.cameraClient) {
+                        console.log('Starting camera for pose detection...');
+                        window.cameraClient.start('camera-feed');
+                    }
+                };
+            }
+
+            function showTargetPose() {
+                console.log('Showing target pose for index:', currentVideoIndex);
+                let imageNumber = (currentVideoIndex + 1).toString().padStart(2, '0');
+                let imageSuffix = (currentVideoIndex + 1 === 20 || currentVideoIndex + 1 === 21) ? 'a' : '';
+                let imageUrl = `/static/poses/P1-${imageNumber}${imageSuffix}.jpg`;
+                
+                // Reset pose status
+                const poseStatus = document.getElementById('poseStatus');
+                if (poseStatus) {
+                    poseStatus.style.display = 'none';
+                }
+                
+                // Update the server's current pose index
+                fetch(`/update_pose_index/${currentVideoIndex}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Successfully updated pose index on server');
+                            
+                            // Load the target pose image
+                            console.log('Loading image:', imageUrl);
+                            currentPose.src = imageUrl;
+                            
+                            currentPose.onerror = (e) => {
+                                console.error('Error loading image:', e);
+                            };
+                            
+                            currentPose.onload = () => {
+                                console.log('Image loaded successfully');
+                                currentPose.style.display = 'block';
+                                startPoseDetection();
+                            };
+                        } else {
+                            console.error('Failed to update pose index:', data.error);
+                        }
+                    })
+                    .catch(error => console.error('Error updating pose index:', error));
+            }
+
+            function startPoseDetection() {
+                console.log('Starting WebSocket-based pose detection...');
+                // Clear any existing interval (from old implementation)
+                if (window._poseCheckInterval) {
+                    clearInterval(window._poseCheckInterval);
+                }
+                
+                // Reset pose matched flag for the current pose
+                poseMatched = false;
+                
+                // The actual pose detection happens through WebSocket events
+                // which are set up in the camera client and handled below
+                console.log('Pose detection active - waiting for pose match via WebSocket...');
+            }
+
+            function showSuccessMessage() {
+                console.log('Tutorial completed!');
+                document.getElementById('success-message').style.display = 'block';
+                tutorialVideo.style.display = 'none';
+                webcamContainer.style.display = 'none';
+                currentPose.style.display = 'none';
+                skipBtn.style.display = 'none';
+                
+                // Hide pose status
+                const poseStatus = document.getElementById('poseStatus');
+                if (poseStatus) {
+                    poseStatus.style.display = 'none';
+                }
+                
+                // Stop camera when tutorial is completed
+                if (window.cameraClient) {
+                    window.cameraClient.stop();
+                }
+            }
+        });
+        
+        // Helper: show transient success overlay on match
+        function showPoseSuccessMessage(data) {
+            try {
+                let overlay = document.getElementById('pose-success-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.id = 'pose-success-overlay';
+                    overlay.className = 'pose-success-overlay';
+                    overlay.innerHTML = `
+                        <div class="pose-success-content">
+                            <div class="pose-success-icon"><i class="bi bi-check-circle-fill"></i></div>
+                            <h3 class="mb-2">Great Job!</h3>
+                            <p class="mb-0">You matched ${data?.pose_name ?? 'the pose'} with ${Math.round(Number(data?.similarity ?? 0))}% accuracy</p>
+                            <div class="pose-success-next">Advancing to next pose...</div>
+                        </div>`;
+                    document.body.appendChild(overlay);
+                }
+                overlay.style.display = 'flex';
+                setTimeout(() => {
+                    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                }, 2500);
+            } catch (e) {
+                console.error('Failed to show success overlay', e);
+            }
+            // Expose for global access (used by camera client / helpers)
+            window.showTargetPose = showTargetPose;
+        }
+
+        // Helper: play the next tutorial clip, then switch to webcam and detection
+        function playNextVideo() {
+            try {
+                // Guard indices
+                if (currentVideoIndex >= totalVideos) {
+                    showSuccessMessage();
+                    if (skipBtn) skipBtn.style.display = 'none';
+                    return;
+                }
+
+                // Stop camera while playing video
+                if (window.cameraClient) {
+                    window.cameraClient.stop();
+                }
+
+                // Compute next video filename
+                let videoFileName;
+                if (currentVideoIndex + 1 === 20 || currentVideoIndex + 1 === 21) {
+                    videoFileName = `clip_${currentVideoIndex + 1}(a).mp4`;
+                } else {
+                    videoFileName = `clip_${currentVideoIndex + 1}.mp4`;
+                }
+                const videoUrl = `/static/poses_video/${videoFileName}`;
+
+                // Show video, hide webcam and pose image
+                const tutorialVideo = document.getElementById('tutorial-video');
+                const webcamContainer = document.getElementById('webcam-container');
+                const currentPose = document.getElementById('current-pose');
+                const skipBtn = document.getElementById('skipBtn');
+                tutorialVideo.style.display = 'block';
+                webcamContainer.style.display = 'none';
+                if (currentPose) currentPose.style.display = 'none';
+
+                // Update video source and playback
+                tutorialVideo.src = videoUrl;
+                tutorialVideo.playbackRate = 0.5;
+
+                // Update progress indicator if present
+                const progressEl = document.getElementById('current-progress');
+                if (progressEl) {
+                    progressEl.textContent = `${currentVideoIndex + 1}/${totalVideos}`;
+                }
+
+                tutorialVideo.onerror = (e) => {
+                    console.error('Error loading video:', e);
+                };
+                tutorialVideo.oncanplay = () => {
+                    tutorialVideo.play().catch(e => console.error('Play failed:', e));
+                };
+
+                tutorialVideo.onended = () => {
+                    tutorialVideo.style.display = 'none';
+                    webcamContainer.style.display = 'block';
+                    if (typeof window.showTargetPose === 'function') {
+                        window.showTargetPose();
+                    }
+                    if (window.cameraClient) {
+                        window.cameraClient.start('camera-feed');
+                    }
+                };
+            } catch (e) {
+                console.error('Failed to play next video', e);
+            }
+        }
+
+        // Start/restart helpers used by buttons
+        function startTutorial() {
+            try {
+                window.currentVideoIndex = 0;
+                window.poseMatched = false;
+                const successMsg = document.getElementById('success-message');
+                if (successMsg) successMsg.style.display = 'none';
+                const skipBtn = document.getElementById('skipBtn');
+                if (skipBtn) skipBtn.style.display = 'inline-block';
+                playNextVideo();
+            } catch (e) { console.error('Failed to start tutorial', e); }
+        }
+
+        function restartTutorial() {
+            try {
+                window.currentVideoIndex = 0;
+                window.poseMatched = false;
+                playNextVideo();
+            } catch (e) { console.error('Failed to restart tutorial', e); }
+        }
+    </script>
+</body>
+</html>
